@@ -22,8 +22,8 @@ import { UserModule } from './user/user.module';
       synchronize: true,
     }),
     TelegramModule,
-    AdminModule,
-    UserModule
+    // AdminModule,
+    // UserModule
   ],
   controllers: [AppController],
   providers: [AppService],
