@@ -9,11 +9,11 @@ export class TelegramService {
 
   constructor(private readonly configService: ConfigService, private readonly usersService: UsersService,) {
     this.bot = new Telegraf(configService.get<string>('TELEGRAM_API_TOKEN'));
-    
-    console.log("this.bot->",this.bot);
-    this.bot.command('start', async (ctx) => this.handleStartCommand(ctx));
+    this.setupWebhook();
+    // console.log("this.bot->",this.bot);
+    // this.bot.command('start', async (ctx) => this.handleStartCommand(ctx));
     this.weatherApiKey = configService.get<string>('WEATHER_API_KEY');
-    console.log("this.weatherApiKey->",this.weatherApiKey);
+    // console.log("this.weatherApiKey->",this.weatherApiKey);
   }
   async handleStartCommand(ctx: any): Promise<void> {
     console.log("in handleStartCOmmand");
@@ -22,25 +22,23 @@ export class TelegramService {
   }
   
  // for just testing
-  async setWebhook(webhookUrl: string): Promise<void> {
-    try {
-      console.log("hereeeeee");
-      const s = await this.bot.telegram.getWebhookInfo();
-      if(s){
-        console.log(" s already exist")
-      }else{
+ private async setupWebhook(): Promise<void> {
+  try {
+    const webhookUrl = 'https://tele-weather-bot-l5zj.onrender.com/telegram/webhook';
 
-        await this.bot.telegram.deleteWebhook();
-  
-        await this.bot.telegram.setWebhook(webhookUrl);
-        console.log(`Webhook set successfully: ${webhookUrl}`);
-      }
+    // Delete existing webhook before setting a new one
+    await this.bot.telegram.deleteWebhook();
 
-    } catch (error) {
-      console.error(`Error setting webhook: ${error.message}`);
-      throw error;
-    }
+    // Set up the new webhook
+    await this.bot.telegram.setWebhook(webhookUrl);
+
+    console.log(`Webhook set successfully: ${webhookUrl}`);
+  } catch (error) {
+    console.error(`Error setting webhook: ${error.message}`);
+    throw error;
   }
+}
+
 
 
 
